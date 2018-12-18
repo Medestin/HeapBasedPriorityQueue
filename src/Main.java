@@ -1,7 +1,7 @@
 public class Main {
 
     public static void main(String[] args) {
-        HeapPriorityQueue queue = new HeapPriorityQueue();
+        HeapPriorityQueue queue = new HeapPriorityQueue(4);
 
         queue.push(15);
         queue.push(20);

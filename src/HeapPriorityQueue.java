@@ -2,10 +2,20 @@ import java.util.Arrays;
 
 public class HeapPriorityQueue {
 
-    private final Node[] queue = new Node[15];
+    private final Node[] queue;
+    private int heapSize = 0;
+
+    public HeapPriorityQueue(int levels) {
+        int nodeSum = 1;
+        while(levels > 1){
+            nodeSum += Math.pow(2, levels-1);
+            --levels;
+        }
+        this.queue = new Node[nodeSum];
+    }
 
     public void push(int value){
-        Node node = putInFirstFreeSpot(value);
+        Node node = insertNode(value);
         if(node.getPosition() != 0){
             Node parentNode = queue[(node.getPosition() - 1) / 2];
             while (value > parentNode.getValue()){
@@ -21,14 +31,12 @@ public class HeapPriorityQueue {
 
     public int pop(){
         Node poppedNode = queue[0];
-
         Node lastNode = setLastNodeToRoot();
 
         Node greaterChild = getGreaterChild(lastNode);
         if(greaterChild == null){
             return poppedNode.getValue();
         }
-
         while(greaterChild.getValue() > lastNode.getValue()){
             swapNodes(greaterChild, lastNode);
 
@@ -52,29 +60,31 @@ public class HeapPriorityQueue {
     }
 
     private Node setLastNodeToRoot(){
-        for(int i = queue.length-1; i >= 0; --i){
-            if(queue[i] != null){
-                Node placeholder = queue[i];
-
-                placeholder.setPosition(0);
-                queue[0] = placeholder;
-                queue[i] = null;
-
-                return placeholder;
-            }
+        if(heapSize == 1){
+            heapSize--;
+            queue[0] = queue[heapSize];
+            queue[0].setPosition(0);
+            return queue[0];
+        } else if(heapSize > 0){
+            heapSize--;
+            queue[0] = queue[heapSize];
+            queue[0].setPosition(0);
+            queue[heapSize] = null;
+            return queue[0];
+        }else {
+            throw new ArrayStoreException("Heap empty!");
         }
-        throw new ArrayStoreException("Heap empty!");
     }
 
-    private Node putInFirstFreeSpot(int value){
-        for(int i = 0; i < queue.length; ++i){
-            if(queue[i] == null){
-                Node node = new Node(value, i);
-                queue[i] = node;
-                return node;
-            }
-        }
+    private Node insertNode(int value){
+        if(heapSize < queue.length){
+            Node node = new Node(value, heapSize);
+            queue[heapSize] = node;
+            heapSize++;
+            return node;
+        } else {
         throw new ArrayStoreException("Heap full!");
+        }
     }
 
     private void swapNodes(Node nodeOne, Node nodeTwo){
