@@ -6,11 +6,7 @@ public class HeapPriorityQueue {
     private int heapSize = 0;
 
     public HeapPriorityQueue(int levels) {
-        int nodeSum = 1;
-        while(levels > 1){
-            nodeSum += Math.pow(2, levels-1);
-            --levels;
-        }
+        int nodeSum = (int) Math.pow(2, levels) - 1;
         this.queue = new Node[nodeSum];
     }
 
